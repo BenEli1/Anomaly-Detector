@@ -3,7 +3,7 @@
 #include "SimpleAnomalyDetector.h"
 #include "anomaly_detection_util.h"
 
-SimpleAnomalyDetector::SimpleAnomalyDetector(): correlationThreshold(0.8), thresholdMultiplier(1.1) {
+SimpleAnomalyDetector::SimpleAnomalyDetector(): correlationThreshold(0.5), thresholdMultiplier(1.1) {
 	// TODO Auto-generated constructor stub
 
 }
@@ -25,7 +25,7 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts){
         for(int j = i+1; j < numOfFeatures; j++){
             float* x = ts.getMeasurements(featureList[i]);
             float* y = ts.getMeasurements(featureList[j]);
-            pearsonBetweenTwo = pearson(x,y, ts.getSizeOfValues());
+            pearsonBetweenTwo = abs(pearson(x,y, ts.getSizeOfValues()));
             delete x;
             delete y;
             if(pearsonBetweenTwo > maxCor){
@@ -61,7 +61,7 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts){
             float distance = dev(p, colleateFeature.lin_reg);
             if (distance > colleateFeature.threshold){
                 string description = colleateFeature.feature1 + "-" + colleateFeature.feature2;
-                AnomalyReport report(description, i);
+                AnomalyReport report(description, i+1);
                 anomalies.push_back(report);
             }
         }

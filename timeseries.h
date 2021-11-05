@@ -22,33 +22,40 @@ public:
 	TimeSeries(const char* CSVfileName){
         //create and open ifstream
         ifstream file(CSVfileName);
-        string line;
+        string line, measurement, feature;
         //read the first line from the file
         getline(file, line);
+        //turn line into stringstream for easy access
         stringstream firstLine(line);
-        string feature;
         //read the featureList from the first line and insert to the map
         while(getline(firstLine, feature, ',')) {
             data.insert(pair<string, vector<float>>(feature, vector<float>()));
             featureList.push_back(feature);
         }
-        string measurement;
         map<string, vector<float>>::iterator it;
+        while(getline(file, line)){
+            stringstream nextLine(line);
+            for(it = data.begin(); it != data.end(); it++){
+                getline(nextLine, measurement, ',');
+                it->second.push_back(stof(measurement));
+            }
+        }
+       /* map<string, vector<float>>::iterator it;
         bool thereIsAnotherLine = true;
         //if there is another line, read the line and insert the measurements to the map
         while(thereIsAnotherLine){
             //each line we begin again with the first feature
             for(it = data.begin(); it != data.end(); it++){
-                getline(file, measurement, ',');
                 //if there is no data to read stop the loops
-                if(measurement.empty()){
+                if(!getline(file, measurement, ',')){
                     thereIsAnotherLine = false;
                     break;
                 }
                 it->second.push_back(stof(measurement));
             }
         }
-        //close the file
+        */
+        //close the filemeasurement.empty()
         file.close();
 	}
     float* getMeasurements(string feature) const;
