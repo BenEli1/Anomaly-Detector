@@ -26,8 +26,8 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts){
             float* x = ts.getMeasurements(featureList[i]);
             float* y = ts.getMeasurements(featureList[j]);
             pearsonBetweenTwo = abs(pearson(x,y, ts.getSizeOfValues()));
-            delete x;
-            delete y;
+            delete [] x;
+            delete [] y;
             if(pearsonBetweenTwo > maxCor){
                 c = j;
                 maxCor = pearsonBetweenTwo;
@@ -44,8 +44,8 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts){
                     .lin_reg = line,
                     .threshold = maxThreshold};
             cf.push_back(associated);
-            delete x;
-            delete y;
+            delete [] x;
+            delete [] y;
         }
     }
 }

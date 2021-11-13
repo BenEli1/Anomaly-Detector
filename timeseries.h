@@ -19,7 +19,9 @@ class TimeSeries{
     //list with all the feature names
     vector<string> featureList;
 public:
-	TimeSeries(const char* CSVfileName){
+    virtual ~TimeSeries();
+
+    TimeSeries(const char* CSVfileName){
         //create and open ifstream
         ifstream file(CSVfileName);
         string line, measurement, feature;

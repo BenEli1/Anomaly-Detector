@@ -32,4 +32,9 @@ float TimeSeries::getSpecificValue(string feature, int location)const{
     return this->data.at(feature).at(location);
 }
 
+TimeSeries::~TimeSeries() {
+    data.clear();
+    featureList.clear();
+}
+
 
