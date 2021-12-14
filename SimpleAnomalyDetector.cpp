@@ -3,7 +3,8 @@
 #include "SimpleAnomalyDetector.h"
 #include "anomaly_detection_util.h"
 
-SimpleAnomalyDetector::SimpleAnomalyDetector(): correlationThreshold(0.9), thresholdMultiplier(1.1) {
+SimpleAnomalyDetector::SimpleAnomalyDetector(): correlationThreshold(0.9), thresholdMultiplier(1.1),
+correlationCircleThreshold(0.5) {
 	// TODO Auto-generated constructor stub
 
 }
@@ -33,19 +34,23 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts){
                 maxCor = pearsonBetweenTwo;
             }
         }
-        if(c != -1){
-            float* x = ts.getMeasurements(featureList[i]);
-            float* y = ts.getMeasurements(featureList[c]);
-            Line line = linear_reg(x, y, numOfValues);
-            float maxThreshold = maxDev(x, y, numOfValues, line)*thresholdMultiplier;
-            correlatedFeatures associated{.feature1 = featureList[i],
-                    .feature2 = featureList[c],
-                    .corrlation = maxCor,
-                    .lin_reg = line,
-                    .threshold = maxThreshold};
-            cf.push_back(associated);
-            delete [] x;
-            delete [] y;
+        if(c != -1) {
+            sortCorrelatedFeatures(maxCor, ts, i, c);
+//            if (maxCor > 0.9) {
+//                float *x = ts.getMeasurements(featureList[i]);
+//                float *y = ts.getMeasurements(featureList[c]);
+//                Line line = linear_reg(x, y, numOfValues);
+//                float maxThreshold = maxDev(x, y, numOfValues, line) * thresholdMultiplier;
+//                correlatedFeatures associated{.feature1 = featureList[i],
+//                        .feature2 = featureList[c],
+//                        .corrlation = maxCor,
+//                        .lin_reg = line,
+//                        .threshold = maxThreshold,
+//                        .minCircle =Circle(Point(0,0),0)};
+//                cf.push_back(associated);
+//                delete[] x;
+//                delete[] y;
+//            }
         }
     }
 }
@@ -54,13 +59,13 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts){
     vector<AnomalyReport> anomalies;
 	int sizeOfValues = ts.getSizeOfValues();
     for(int i = 0; i < sizeOfValues; i++){
-        for(correlatedFeatures colleateFeature : cf){
-            float valueOfFeature1 = ts.getSpecificValue(colleateFeature.feature1 , i);
-            float valueOfFeature2 = ts.getSpecificValue(colleateFeature.feature2 , i);
+        for(correlatedFeatures correlatedFeature : cf){
+            float valueOfFeature1 = ts.getSpecificValue(correlatedFeature.feature1 , i);
+            float valueOfFeature2 = ts.getSpecificValue(correlatedFeature.feature2 , i);
             Point p(valueOfFeature1, valueOfFeature2);
-            float distance = dev(p, colleateFeature.lin_reg);
-            if (distance > colleateFeature.threshold){
-                string description = colleateFeature.feature1 + "-" + colleateFeature.feature2;
+            float distance = distanceCalc(p,correlatedFeature);
+            if (distance > correlatedFeature.threshold){
+                string description = correlatedFeature.feature1 + "-" + correlatedFeature.feature2;
                 AnomalyReport report(description, i+1);
                 anomalies.push_back(report);
             }

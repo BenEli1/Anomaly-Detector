@@ -19,8 +19,10 @@ struct correlatedFeatures{
 
 
 class SimpleAnomalyDetector:public TimeSeriesAnomalyDetector{
-	vector<correlatedFeatures> cf; //vector containing all correlated features in pairs.
-    const float correlationThreshold; // the correlation threshold(0.8) currently.
+
+    const float correlationThreshold; // the correlation threshold(0.9) currently.
+    const float correlationCircleThreshold;
+// the correlation threshold of the Circle(0.5) currently.
     const float thresholdMultiplier; // the threshold multiplier(currently 1.1)
 public:
 	SimpleAnomalyDetector();
@@ -37,6 +39,12 @@ public:
 	vector<correlatedFeatures> getNormalModel(){
 		return cf;
 	}
+    virtual void sortCorrelatedFeatures(float maxCor, const TimeSeries& ts, int i, int c);
+    virtual float distanceCalc(Point p,correlatedFeatures correlatedFeature);
+    const vector<correlatedFeatures> &getCf() const;
+    const float getCorrelationThreshold() const;
+    const float getCorrelationCircleThreshold() const;
+    const float getThresholdMultiplier() const;
 
 };
 
