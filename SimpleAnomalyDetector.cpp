@@ -5,12 +5,8 @@
 
 SimpleAnomalyDetector::SimpleAnomalyDetector(): correlationThreshold(0.9), thresholdMultiplier(1.1),
 correlationCircleThreshold(0.5) {
-	// TODO Auto-generated constructor stub
-
 }
-
 SimpleAnomalyDetector::~SimpleAnomalyDetector() {
-	// TODO Auto-generated destructor stub
 }
 
 
@@ -36,21 +32,6 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts){
         }
         if(c != -1) {
             sortCorrelatedFeatures(maxCor, ts, i, c);
-//            if (maxCor > 0.9) {
-//                float *x = ts.getMeasurements(featureList[i]);
-//                float *y = ts.getMeasurements(featureList[c]);
-//                Line line = linear_reg(x, y, numOfValues);
-//                float maxThreshold = maxDev(x, y, numOfValues, line) * thresholdMultiplier;
-//                correlatedFeatures associated{.feature1 = featureList[i],
-//                        .feature2 = featureList[c],
-//                        .corrlation = maxCor,
-//                        .lin_reg = line,
-//                        .threshold = maxThreshold,
-//                        .minCircle =Circle(Point(0,0),0)};
-//                cf.push_back(associated);
-//                delete[] x;
-//                delete[] y;
-//            }
         }
     }
 }

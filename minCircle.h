@@ -1,4 +1,5 @@
-
+//Ben Eli 319086435
+//Sahar Rofe 209275114
 #ifndef MINCIRCLE_H_
 #define MINCIRCLE_H_
 
@@ -9,10 +10,6 @@
 #include "anomaly_detection_util.h"
 
 using namespace std;
-
-
-// ------------ DO NOT CHANGE -----------
-
 class Circle{
 public:
     Point center;
@@ -21,23 +18,38 @@ public:
     const Point &getCenter() const {
         return center;
     }
-
     float getRadius() const {
         return radius;
     }
 };
-// --------------------------------------
+//finds the minimum circle that contains all of the points.
 Circle findMinCircle(Point** points,size_t size);
-float dist(const Point& a, const Point& b);
-bool is_inside(const Circle& c, const Point& p);
-Point get_circle_center(double bx, double by,
-                        double cx, double cy);
-Circle circle_from(const Point& A, const Point& B,
-                   const Point& C);
-Circle circle_from(const Point& A, const Point& B);
-bool is_valid_circle(const Circle& c,
-                     const vector<Point>& P);
-Circle min_circle_trivial(vector<Point>& P);
+
+//calculates distance between two points.
+float distanceBetweenTwoPoints(const Point& a, const Point& b);
+
+//checks if p is inside circle or on the boundaries
+bool isInside(const Circle& c, const Point& p);
+//calculates circle center given
+Point getCircleCenter(double bx, double by,
+                      double cx, double cy);
+
+// Function to return the smallest circle that intersects 3 points.
+Circle circleFrom(const Point& A, const Point& B,
+                  const Point& C);
+
+// Function to return the smallest circle that intersects 2 points.
+Circle circleFrom(const Point& A, const Point& B);
+
+// Function to check whether a circle encloses the given points.
+bool isValidCircle(const Circle& c,
+                   const vector<Point>& P);
+
+// Function to return the minimum enclosing circle for N <= 3
+Circle minCircleTrivial(vector<Point>& P);
+
+//Returns the MEC using Welzl's algorithm
 Circle findMinCircleHelper(vector<Point>& P,
                            vector<Point> R, int n);
+
 #endif /* MINCIRCLE_H_ */

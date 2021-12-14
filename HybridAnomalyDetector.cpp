@@ -1,17 +1,17 @@
-
+//Ben Eli 319086435
+//Sahar Rofe 209275114
 #include "HybridAnomalyDetector.h"
-
+//default builder and destructor
 HybridAnomalyDetector::HybridAnomalyDetector() {
-	// TODO Auto-generated constructor stub
-
 }
 
 HybridAnomalyDetector::~HybridAnomalyDetector() {
-	// TODO Auto-generated destructor stub
 }
+
+//measure the distance between point and the circle/line depending on the correlation between the features
 float HybridAnomalyDetector::distanceCalc(Point p,correlatedFeatures correlatedFeature){
     if(correlatedFeature.isHybrid) {
-        return dist(p, correlatedFeature.minCircle.center);
+        return distanceBetweenTwoPoints(p, correlatedFeature.minCircle.center);
     }
     else{
         SimpleAnomalyDetector::distanceCalc(p,correlatedFeature);
@@ -44,6 +44,5 @@ void HybridAnomalyDetector::sortCorrelatedFeatures(float maxCor, const TimeSerie
         }
         delete[] x;
         delete[] y;
-//        findMinCircle()
     }
 }
