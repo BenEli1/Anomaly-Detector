@@ -3,7 +3,7 @@
 #include "SimpleAnomalyDetector.h"
 #include "anomaly_detection_util.h"
 
-SimpleAnomalyDetector::SimpleAnomalyDetector(): correlationThreshold(0.5), thresholdMultiplier(1.1) {
+SimpleAnomalyDetector::SimpleAnomalyDetector(): correlationThreshold(0.9), thresholdMultiplier(1.1) {
 	// TODO Auto-generated constructor stub
 
 }

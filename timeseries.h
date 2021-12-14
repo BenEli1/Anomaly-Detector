@@ -42,22 +42,6 @@ public:
                 it->second.push_back(stof(measurement));
             }
         }
-       /* map<string, vector<float>>::iterator it;
-        bool thereIsAnotherLine = true;
-        //if there is another line, read the line and insert the measurements to the map
-        while(thereIsAnotherLine){
-            //each line we begin again with the first feature
-            for(it = data.begin(); it != data.end(); it++){
-                //if there is no data to read stop the loops
-                if(!getline(file, measurement, ',')){
-                    thereIsAnotherLine = false;
-                    break;
-                }
-                it->second.push_back(stof(measurement));
-            }
-        }
-        */
-        //close the filemeasurement.empty()
         file.close();
 	}
     float* getMeasurements(string feature) const;
