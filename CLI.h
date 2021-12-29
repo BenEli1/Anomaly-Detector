@@ -13,23 +13,16 @@ class CLI {
     map<int, Command> commandMap;
 	// you can add data members
 public:
-	CLI(DefaultIO* dio):dio(dio){
-        commandMap = map<int, Command>();
-        commandMap.insert(pair<int, Command>(1,uploadFileCommand(dio)));
-        commandMap.insert(pair<int, Command>(2,algoSettingsCommand(dio)));
-        commandMap.insert(pair<int, Command>(3,detectAnomaliesCommand(dio)));
-        commandMap.insert(pair<int, Command>(4,displayResultsCommand(dio)));
-        commandMap.insert(pair<int, Command>(5,uploadAndAnalyzeCommand(dio)));
-        commandMap.insert(pair<int, Command>(6,exitCommand(dio)));
+	CLI(DefaultIO* dio):dio(dio), size(7){
+        commandMap = new Command*[size];
+        commandMap[1] = new uploadFileCommand(dio);
+        commandMap[2] = new algoSettingsCommand(dio);
+        commandMap[3] = new detectAnomaliesCommand(dio);
+        commandMap[4] = new displayResultsCommand(dio);
+        commandMap[5] = new uploadAndAnalyzeCommand(dio);
+        commandMap[6] = new exitCommand(dio);
     };
-	void start(){
-        int size = commandMap.size();
-        dio->write("Welcome to the Anomaly Detection Server.\n");
-        dio->write("Please choose an option:\n");
-        for(int i = 1 ; i<=size ; i++){
-            dio->write(commandMap[i].getDescription());
-        }
-    }
+	void start();
 	virtual ~CLI();
 };
 

@@ -19,6 +19,7 @@ public:
 	virtual void write(float f)=0;
 	virtual void read(float* f)=0;
 	virtual ~DefaultIO(){}
+    TimeSeries uploadFile(string path);
 
 	// you may add additional methods here
 };
@@ -47,6 +48,7 @@ public:
 
 // implement here your command classes
 class uploadFileCommand: public Command{
+
 public:
     uploadFileCommand(DefaultIO *dio) : Command(dio) {
         setDescription("1. upload a time series csv file\n");
@@ -54,7 +56,7 @@ public:
 
 private:
     void execute(){
-
+        return;
 }
 };
 
@@ -66,6 +68,7 @@ public:
 
 private:
     void execute(){
+        return;
 
     }
 };
@@ -78,6 +81,7 @@ public:
 
 private:
     void execute(){
+        return;
 
     }
 };
@@ -90,6 +94,7 @@ public:
 
 private:
     void execute(){
+        return;
 
     }
 };
@@ -102,6 +107,7 @@ public:
 
 private:
     void execute(){
+        return;
 
     }
 };
@@ -114,6 +120,7 @@ public:
 
 private:
     void execute(){
+        return;
 
     }
 };
