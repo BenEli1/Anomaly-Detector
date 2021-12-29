@@ -7,11 +7,10 @@
 
 #include <iostream>
 #include <fstream>
-#include "../../OneDrive - Bar-Ilan University/Desktop/assignment/commands.h"
-#include "../../OneDrive - Bar-Ilan University/Desktop/assignment/CLI.h"
+#include "commands.h"
+#include "CLI.h"
 
 using namespace std;
-
 
 class STDtest:public DefaultIO{
 	ifstream in;

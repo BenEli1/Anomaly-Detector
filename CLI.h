@@ -4,12 +4,13 @@
 #define CLI_H_
 
 #include <string.h>
-#include "../../OneDrive - Bar-Ilan University/Desktop/assignment/commands.h"
+#include "commands.h"
 
 using namespace std;
 
 class CLI {
 	DefaultIO* dio;
+    map<int, Command> commandMap;
 	// you can add data members
 public:
 	CLI(DefaultIO* dio);

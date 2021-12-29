@@ -8,7 +8,7 @@
 
 #include <fstream>
 #include <vector>
-#include "../../OneDrive - Bar-Ilan University/Desktop/assignment/HybridAnomalyDetector.h"
+#include "HybridAnomalyDetector.h"
 
 using namespace std;
 
@@ -29,14 +29,94 @@ public:
 // you may edit this class
 class Command{
 	DefaultIO* dio;
+    string description;
 public:
 	Command(DefaultIO* dio):dio(dio){}
 	virtual void execute()=0;
-	virtual ~Command(){}
+
+    void setDescription(const string &description) {
+        Command::description = description;
+    }
+
+    const string &getDescription() const {
+        return description;
+    }
+
+    virtual ~Command(){}
 };
 
 // implement here your command classes
+class uploadFileCommand: public Command{
+public:
+    uploadFileCommand(DefaultIO *dio) : Command(dio) {
+        setDescription("1. upload a time series csv file\n");
+    }
 
+private:
+    void execute(){
+
+}
+};
+
+class algoSettingsCommand: public Command{
+public:
+    algoSettingsCommand(DefaultIO *dio) : Command(dio) {
+        setDescription("2. algorithm settings\n");
+    }
+
+private:
+    void execute(){
+
+    }
+};
+
+class detectAnomaliesCommand: public Command{
+public:
+    detectAnomaliesCommand(DefaultIO *dio) : Command(dio) {
+        setDescription("3. detect anomalies\n");
+    }
+
+private:
+    void execute(){
+
+    }
+};
+
+class displayResultsCommand: public Command{
+public:
+    displayResultsCommand(DefaultIO *dio) : Command(dio) {
+        setDescription("4. display results\n");
+    }
+
+private:
+    void execute(){
+
+    }
+};
+
+class uploadAndAnalyzeCommand: public Command{
+public:
+    uploadAndAnalyzeCommand(DefaultIO *dio) : Command(dio) {
+        setDescription("5. upload anomalies and analyze results\n");
+    }
+
+private:
+    void execute(){
+
+    }
+};
+
+class exitCommand: public Command{
+public:
+    exitCommand(DefaultIO *dio) : Command(dio) {
+        setDescription("6. exit");
+    }
+
+private:
+    void execute(){
+
+    }
+};
 
 
 #endif /* COMMANDS_H_ */
