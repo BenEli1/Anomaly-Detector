@@ -10,7 +10,10 @@ using namespace std;
 
 class CLI {
 	DefaultIO* dio;
-    map<int, Command> commandMap;
+    Command** commandMap;
+    int size;
+    TimeSeries testFile;
+
 	// you can add data members
 public:
 	CLI(DefaultIO* dio):dio(dio), size(7){

@@ -115,7 +115,7 @@ private:
 class exitCommand: public Command{
 public:
     exitCommand(DefaultIO *dio) : Command(dio) {
-        setDescription("6. exit");
+        setDescription("6. exit\n");
     }
 
 private:
@@ -125,5 +125,40 @@ private:
     }
 };
 
+class StandartDefuldIO:public DefaultIO{
+    ifstream in;
+    ofstream out;
+public:
+    StandartDefuldIO(string inputFile,string outputFile){
+        in.open(inputFile);
+        out.open(outputFile);
+    }
+    virtual string read(){
+        string s;
+        in>>s;
+        return s;
+    }
+    virtual void write(string text){
+        out<<text;
+    }
+
+    virtual void write(float f){
+        out<<f;
+    }
+
+    virtual void read(float* f){
+        in>>*f;
+    }
+
+    void close(){
+        if(in.is_open())
+            in.close();
+        if(out.is_open())
+            out.close();
+    }
+    ~StandartDefuldIO(){
+        close();
+    }
+};
 
 #endif /* COMMANDS_H_ */
