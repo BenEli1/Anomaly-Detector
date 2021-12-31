@@ -34,10 +34,8 @@ protected:
 public:
 	SimpleAnomalyDetector();
 	virtual ~SimpleAnomalyDetector();
-    /*
-     * for every feature find his associated correlative feature , calculates the line between then and max dev.
-     */
-	virtual void learnNormal(const TimeSeries& ts);
+
+    virtual void learnNormal(const TimeSeries& ts);
     /*
      * checks in every line if there is an anomaly returns a vector with the anaomalies.
      */

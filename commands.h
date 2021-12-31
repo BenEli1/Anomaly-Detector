@@ -13,6 +13,16 @@
 
 using namespace std;
 
+class Report{
+public:
+    int start;
+    int finish;
+    int size;
+    Report(int start, int finish): start(start), finish(finish) {
+        size = finish - start + 1;
+    }
+};
+
 class DefaultIO{
 public:
 	virtual string read()=0;
@@ -89,7 +99,6 @@ public:
         setDescription("1.upload a time series csv file\n");
     }
 
-private:
     void execute(){
         const char* csvFileName = "output.txt";
         dio->write("Please upload your local train CSV file.\n");
@@ -110,10 +119,24 @@ public:
         setDescription("2.algorithm settings\n");
     }
 
-private:
     void execute(){
-        return;
-
+        float newThreshold;
+        while(true) {
+            dio->write("The current correlation threshold is ");
+            dio->write(dio->getThreshold());
+            dio->write("\n");
+            dio->write("Type a new threshold\n");
+            dio->read(&newThreshold);
+            if (0 <= newThreshold && newThreshold <= 1) {
+                dio->setThreshold(newThreshold);
+                dio->hybridDetector->setCorrelationThreshold(newThreshold);
+                break;
+            }
+            //if the threshold is not valid.
+            dio->write("please choose a value between 0 and 1.\n");
+            //wait for enter
+            dio->read();
+        }
     }
 };
 
@@ -137,13 +160,25 @@ public:
     }
 
     void execute(){
-        return;
-
+        for(AnomalyReport anomaly : dio->reports){
+            dio->write(anomaly.timeStep);
+            dio->write("\t");
+            dio->write(anomaly.description);
+            dio->write("\n");
+        }
+        dio->write("Done.\n");
     }
 };
 
 class uploadAndAnalyzeCommand: public Command{
 public:
+    float P = 0;
+    float TP = 0;
+    float FP = 0;
+    float N = 0;
+    int counter = 0;
+    vector<Report> reportVector;
+
     uploadAndAnalyzeCommand(DefaultIO *dio) : Command(dio) {
         setDescription("5.upload anomalies and analyze results\n");
     }
@@ -248,5 +283,7 @@ public:
         close();
     }
 };
+
+
 
 #endif /* COMMANDS_H_ */
