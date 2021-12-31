@@ -1,5 +1,5 @@
-
-
+//Ben Eli 319086435
+//Sahar Rofe 209275114
 #ifndef COMMANDS_H_
 #define COMMANDS_H_
 
@@ -170,7 +170,7 @@ public:
     }
 };
 
-class uploadAndAnalyzeCommand: public Command{
+class uploadAndAnalyzeCommand: public Command {
 public:
     float P = 0;
     float TP = 0;
@@ -184,10 +184,8 @@ public:
     }
 
     void execute() {
-        int start,finish;
-        calculateReports();
-        N = dio->csvFileTest->getSizeOfValues();
-        string currentDescription;
+        calculateReportsFromAnomalies();
+        anomaliesFromDetects();
         dio->write("Please upload your local anomalies file.\n");
         string line = "";
         while ((line = dio->read()) != "done") {
@@ -201,12 +199,11 @@ public:
                     break;
                 }
             }
-//            float tpDivP = (float)((int)((TP/P)*1000))/1000;
-//            float fpDivN = (float)((int)((FP/N)*1000))/1000;
         }
-        FP = reportVector.size() - TP;
-        float tpDivP = TP/P;
-        float fpDivN = FP/N;
+
+        FP = vectorFromDetect.size() - TP;
+        float tpDivP = (float)((int)((TP/P)*1000))/1000;
+        float fpDivN = (float)((int)((FP/N)*1000))/1000;
         dio->write("Upload complete.\n");
         dio->write("True Positive Rate: ");
         dio->write((tpDivP));
@@ -214,9 +211,25 @@ public:
         dio->write("False Positive Rate: ");
         dio->write(fpDivN);
         dio->write("\n");
+        P=0,N=0,TP=0,FP=0;
+        vectorFromDetect.clear();
+        vectorFromAnomaly.clear();
     }
 
-    void calculateReports(){
+    void calculateReportsFromAnomalies() {
+        int start, finish;
+        N = dio->csvFileTest->getSizeOfValues();
+        string line;
+        while ((line = dio->read()) != "done") {
+            P++;
+            start = std::stoi(line.substr(0, line.find(',')));
+            finish = std::stoi(line.substr(line.find(',') + 1, line.size()));
+            N -= (finish - start + 1);
+            vectorFromAnomaly.push_back(Report(start, finish));
+        }
+    }
+
+    void anomaliesFromDetects(){
         int start, finish, counter = 0;
         int currentTimeStep = dio->reports[counter].timeStep;
         string currenDescription = dio->reports[counter].description;
@@ -228,11 +241,12 @@ public:
                 currentTimeStep += 1;
             else{
                 currenDescription = dio->reports[counter].description;
-                reportVector.push_back(Report(start, currentTimeStep));
+                vectorFromDetect.push_back(Report(start, currentTimeStep));
                 currentTimeStep = dio->reports[counter].timeStep;
                 start = currentTimeStep;
             }
         }
+        vectorFromDetect.push_back(Report(start, currentTimeStep));
     }
 };
 
