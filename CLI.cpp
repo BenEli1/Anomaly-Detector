@@ -23,7 +23,7 @@ void CLI::start(){
 
 
 CLI::~CLI() {
-    for(int i = 0; i < size; i++) {
+    for(int i = 1; i < size; i++) {
         delete commandMap[i];
     }
     delete[] commandMap;
