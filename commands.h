@@ -177,7 +177,8 @@ public:
     float FP = 0;
     float N = 0;
     int counter = 0;
-    vector<Report> reportVector;
+    vector<Report> vectorFromDetect;
+    vector<Report> vectorFromAnomaly;
 
     uploadAndAnalyzeCommand(DefaultIO *dio) : Command(dio) {
         setDescription("5.upload anomalies and analyze results\n");
@@ -187,14 +188,9 @@ public:
         calculateReportsFromAnomalies();
         anomaliesFromDetects();
         dio->write("Please upload your local anomalies file.\n");
-        string line = "";
-        while ((line = dio->read()) != "done") {
-            P++;
-            start = std::stoi(line.substr(0, line.find(',')));
-            finish = std::stoi(line.substr(line.find(',') + 1, line.size()));
-            N -= (finish - start + 1);
-            for(Report report: reportVector){
-                if(!(report.start > finish || report.finish <start)) {
+        for (Report report: vectorFromDetect) {
+            for (Report anomaly: vectorFromAnomaly) {
+                if (!(report.start > anomaly.finish || report.finish < anomaly.start)) {
                     TP++;
                     break;
                 }
