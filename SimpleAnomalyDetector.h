@@ -12,6 +12,7 @@
 #include "minCircle.h"
 
 struct correlatedFeatures{
+    void setThreshold(float threshold);
     bool isHybrid;
 	string feature1,feature2;  // names of the correlated features
 	float corrlation; //corrlation between the 2 features
@@ -22,8 +23,9 @@ struct correlatedFeatures{
 
 
 class SimpleAnomalyDetector:public TimeSeriesAnomalyDetector{
-
-    const float correlationThreshold; // the correlation threshold(0.9) currently.
+protected:
+    float correlationThreshold; // the correlation threshold(0.9) currently.
+private:
     const float correlationCircleThreshold;
 // the correlation threshold of the Circle(0.5) currently.
     const float thresholdMultiplier; // the threshold multiplier(currently 1.1)
@@ -50,6 +52,8 @@ public:
     const float getCorrelationThreshold() const;
     const float getCorrelationCircleThreshold() const;
     const float getThresholdMultiplier() const;
+    void setThreshold(float threshold);
+    void setCorrelationThreshold(float correlationThreshold);
 
 };
 

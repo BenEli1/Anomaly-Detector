@@ -12,6 +12,9 @@ void CLI::start(){
        if (option == 6){
            break;
        }
+       if (option == 0){
+           continue;
+       }
            commandMap[option]->execute();
    }
 }

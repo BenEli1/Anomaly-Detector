@@ -8,6 +8,7 @@
 
 #include <fstream>
 #include <vector>
+#include <iomanip>
 #include "HybridAnomalyDetector.h"
 
 using namespace std;
@@ -15,22 +16,56 @@ using namespace std;
 class DefaultIO{
 public:
 	virtual string read()=0;
-	virtual void write(string text)=0;
+    HybridAnomalyDetector* hybridDetector;
+    DefaultIO() {
+        hybridDetector = new HybridAnomalyDetector();
+    }
+    virtual void write(string text)=0;
 	virtual void write(float f)=0;
 	virtual void read(float* f)=0;
-	virtual ~DefaultIO(){}
-    TimeSeries uploadFile(string path);
+	virtual ~DefaultIO(){
+        delete csvFileTest;
+        delete csvFileLearn;
+        delete hybridDetector;
+    }
+    TimeSeries* csvFileLearn = nullptr;//file that we get from the client
+    TimeSeries* csvFileTest = nullptr;//file that we get from the client
+    vector<AnomalyReport> reports;
+    float threshold = 0.9;
 
-	// you may add additional methods here
+    void setCsvFileLearn(TimeSeries *csvFileLearn) {
+        DefaultIO::csvFileLearn = csvFileLearn;
+    }
+
+    void setCsvFileTest(TimeSeries *csvFileTest) {
+        DefaultIO::csvFileTest = csvFileTest;
+    }
+
+    void setThreshold(float threshold) {
+        DefaultIO::threshold = threshold;
+    }
+    void readAndWriteToFile(string fileName) {
+        std::ofstream outfile(fileName);
+        string line = "";
+        while ((line = read()) != "done") {
+            outfile << line << endl;
+        }
+        outfile.close();
+    }
+
+    float getThreshold() {
+        return DefaultIO::threshold;
+    }
+    // you may add additional methods here
 };
-
 // you may add here helper classes
 
 
 // you may edit this class
 class Command{
-	DefaultIO* dio;
     string description;
+protected:
+    DefaultIO* dio;
 public:
 	Command(DefaultIO* dio):dio(dio){}
 	virtual void execute()=0;
@@ -51,19 +86,28 @@ class uploadFileCommand: public Command{
 
 public:
     uploadFileCommand(DefaultIO *dio) : Command(dio) {
-        setDescription("1. upload a time series csv file\n");
+        setDescription("1.upload a time series csv file\n");
     }
 
 private:
     void execute(){
-        return;
-}
+        const char* csvFileName = "output.txt";
+        dio->write("Please upload your local train CSV file.\n");
+        dio->readAndWriteToFile("anomalyTrain.csv");
+        dio->setCsvFileLearn(new TimeSeries("anomalyTrain.csv"));
+        dio->write("Upload complete.\n");
+        dio->write("Please upload your local test CSV file.\n");
+        dio->readAndWriteToFile("anomalyTest.csv");
+        dio->setCsvFileTest(new TimeSeries("anomalyTest.csv"));
+        dio->write("Upload complete.\n");
+    }
+
 };
 
 class algoSettingsCommand: public Command{
 public:
     algoSettingsCommand(DefaultIO *dio) : Command(dio) {
-        setDescription("2. algorithm settings\n");
+        setDescription("2.algorithm settings\n");
     }
 
 private:
@@ -76,23 +120,22 @@ private:
 class detectAnomaliesCommand: public Command{
 public:
     detectAnomaliesCommand(DefaultIO *dio) : Command(dio) {
-        setDescription("3. detect anomalies\n");
+        setDescription("3.detect anomalies\n");
     }
 
-private:
     void execute(){
-        return;
-
+        dio->hybridDetector->learnNormal(*(dio->csvFileLearn));
+        dio->reports = dio->hybridDetector->detect(*(dio->csvFileTest));
+        dio->write("anomaly detection complete.\n");
     }
 };
 
 class displayResultsCommand: public Command{
 public:
     displayResultsCommand(DefaultIO *dio) : Command(dio) {
-        setDescription("4. display results\n");
+        setDescription("4.display results\n");
     }
 
-private:
     void execute(){
         return;
 
@@ -102,34 +145,79 @@ private:
 class uploadAndAnalyzeCommand: public Command{
 public:
     uploadAndAnalyzeCommand(DefaultIO *dio) : Command(dio) {
-        setDescription("5. upload anomalies and analyze results\n");
+        setDescription("5.upload anomalies and analyze results\n");
     }
 
-private:
-    void execute(){
-        return;
+    void execute() {
+        int start,finish;
+        calculateReports();
+        N = dio->csvFileTest->getSizeOfValues();
+        string currentDescription;
+        dio->write("Please upload your local anomalies file.\n");
+        string line = "";
+        while ((line = dio->read()) != "done") {
+            P++;
+            start = std::stoi(line.substr(0, line.find(',')));
+            finish = std::stoi(line.substr(line.find(',') + 1, line.size()));
+            N -= (finish - start + 1);
+            for(Report report: reportVector){
+                if(!(report.start > finish || report.finish <start)) {
+                    TP++;
+                    break;
+                }
+            }
+//            float tpDivP = (float)((int)((TP/P)*1000))/1000;
+//            float fpDivN = (float)((int)((FP/N)*1000))/1000;
+        }
+        FP = reportVector.size() - TP;
+        float tpDivP = TP/P;
+        float fpDivN = FP/N;
+        dio->write("Upload complete.\n");
+        dio->write("True Positive Rate: ");
+        dio->write((tpDivP));
+        dio->write("\n");
+        dio->write("False Positive Rate: ");
+        dio->write(fpDivN);
+        dio->write("\n");
+    }
 
+    void calculateReports(){
+        int start, finish, counter = 0;
+        int currentTimeStep = dio->reports[counter].timeStep;
+        string currenDescription = dio->reports[counter].description;
+        start = dio->reports[counter].timeStep;
+        while(counter < dio->reports.size()-1){
+            counter++;
+            if (dio->reports[counter].timeStep - 1 == currentTimeStep
+            && dio->reports[counter].description == currenDescription)
+                currentTimeStep += 1;
+            else{
+                currenDescription = dio->reports[counter].description;
+                reportVector.push_back(Report(start, currentTimeStep));
+                currentTimeStep = dio->reports[counter].timeStep;
+                start = currentTimeStep;
+            }
+        }
     }
 };
 
 class exitCommand: public Command{
 public:
     exitCommand(DefaultIO *dio) : Command(dio) {
-        setDescription("6. exit\n");
+        setDescription("6.exit\n");
     }
 
-private:
+
     void execute(){
         return;
-
     }
 };
 
-class StandartDefuldIO:public DefaultIO{
+class StandartDefaultIO: public DefaultIO{
     ifstream in;
     ofstream out;
 public:
-    StandartDefuldIO(string inputFile,string outputFile){
+    StandartDefaultIO(string inputFile, string outputFile){
         in.open(inputFile);
         out.open(outputFile);
     }
@@ -156,7 +244,7 @@ public:
         if(out.is_open())
             out.close();
     }
-    ~StandartDefuldIO(){
+    ~StandartDefaultIO(){
         close();
     }
 };

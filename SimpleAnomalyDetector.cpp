@@ -9,7 +9,6 @@ correlationCircleThreshold(0.5) {
 SimpleAnomalyDetector::~SimpleAnomalyDetector() {
 }
 
-
 void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts){
 	vector<string> featureList(ts.getFeatures());
     int numOfFeatures = ts.getSizeOfFeatures();
@@ -109,3 +108,10 @@ const float SimpleAnomalyDetector::getThresholdMultiplier() const {
     return thresholdMultiplier;
 }
 
+void SimpleAnomalyDetector::setCorrelationThreshold(float correlationThreshold) {
+    SimpleAnomalyDetector::correlationThreshold = correlationThreshold;
+}
+
+void correlatedFeatures::setThreshold(float threshold) {
+    correlatedFeatures::threshold = threshold;
+}

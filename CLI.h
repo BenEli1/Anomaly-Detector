@@ -12,7 +12,6 @@ class CLI {
 	DefaultIO* dio;
     Command** commandMap;
     int size;
-    TimeSeries testFile;
 
 	// you can add data members
 public:
