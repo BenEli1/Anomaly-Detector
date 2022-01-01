@@ -58,10 +58,8 @@ void Server::start(ClientHandler& ch)throw(const char*){
             alarm(1);
             int aClient = accept(fd,(struct sockaddr*)&client,&clientSize);
             if(aClient>0){
-                //t=new thread([&aClient,this,&ch](){
                 ch.handle(aClient);
                 close(aClient);
-                //});
             }
             alarm(1);
 
