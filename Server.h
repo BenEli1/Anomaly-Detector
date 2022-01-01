@@ -24,7 +24,8 @@ class ClientHandler{
 class socketIO:public DefaultIO{
     int clientID;
 public:
-    socketIO(int clientID):clientID(clientID){}
+    socketIO(int clientID):clientID(clientID){
+    }
     virtual string read();
     virtual void write(string text);
     virtual void write(float f);

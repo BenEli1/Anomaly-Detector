@@ -12,11 +12,15 @@ string socketIO::read(){
     return s;
 }
 void socketIO::write(string text){
-
+    const char* txt = text.c_str();
+    send(clientID ,txt ,strlen(txt) ,0);
 }
 
 void socketIO::write(float f){
-
+    ostringstream str;
+    str << f;
+    string s(str.str());
+    write(s);
 }
 
 Server::Server(int port)throw (const char*) {
