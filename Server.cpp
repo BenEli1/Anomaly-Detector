@@ -6,14 +6,14 @@ string socketIO::read(){
     char c = ' ';
     string s = "";
     while(c != '\n'){
-        recv(clientID,&c,sizeof(char),0);
+        recv(clientID,&c,1,0);
         s += c;
     }
     return s;
 }
 void socketIO::write(string text){
-    const char* txt = text.c_str();
-    send(clientID ,txt ,strlen(txt) ,0);
+    const char* t = text.c_str();
+    send(clientID ,t ,strlen(t) ,0);
 }
 
 void socketIO::write(float f){
@@ -60,8 +60,6 @@ void Server::start(ClientHandler& ch)throw(const char*){
                 ch.handle(clientAccept);
                 close(clientAccept);
             }
-            alarm(1);
-
         }
         close(fileDescriptor);
     });

@@ -36,11 +36,14 @@ public:
 
 // edit your AnomalyDetectionHandler class here
 class AnomalyDetectionHandler:public ClientHandler{
+    CLI* cli = nullptr;
 	public:
     virtual void handle(int clientID){
         socketIO socketIo(clientID);
-        CLI cli(&socketIo);
-        cli.start();
+        cli = new CLI(&socketIo);
+        //CLI cli(&socketIo);
+        cli->start();
+        delete cli;
     }
 };
 
