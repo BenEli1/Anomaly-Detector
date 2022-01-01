@@ -3,7 +3,7 @@
 #include "Server.h"
 string socketIO::read(){
     //Read char by char until /n
-    char c = 0;
+    char c = ' ';
     string s = "";
     while(c != '\n'){
         recv(clientID,&c,sizeof(char),0);
@@ -30,8 +30,8 @@ void socketIO::read(float* f){
 Server::Server(int port)throw (const char*) {
     stopped = false;
     // Create a socket (IPv4, TCP)
-    fd = socket(AF_INET, SOCK_STREAM, 0);
-    if (fd == -1) {
+    fileDescriptor = socket(AF_INET, SOCK_STREAM, 0);
+    if (fileDescriptor == -1) {
         std::cout << "Failed to create socket. errno: " << errno << std::endl;
         exit(EXIT_FAILURE);
     }
@@ -39,35 +39,31 @@ Server::Server(int port)throw (const char*) {
     server.sin_addr.s_addr = INADDR_ANY;
     server.sin_port = htons(port); // htons is necessary to convert a number to
     // network byte order
-    if (bind(fd, (struct sockaddr*)&server, sizeof(server)) < 0) {
+    if (bind(fileDescriptor, (struct sockaddr*)&server, sizeof(server)) < 0) {
         std::cout << "Failed to bind to port. errno: " << errno << std::endl;
         exit(EXIT_FAILURE);
     }
 
     // Start listening. Hold at most 5 connections in the queue
-    if (listen(fd, 5) < 0) {
+    if (listen(fileDescriptor, 5) < 0) {
         std::cout << "Failed to listen on socket. errno: " << errno << std::endl;
         exit(EXIT_FAILURE);
     }
 }
-//void sigHandler(int sigNum){
-//
-//}
 void Server::start(ClientHandler& ch)throw(const char*){
     t = new thread([&ch,this](){
-//        signal(SIGALRM,sigHandler);
         while(!stopped){
             socklen_t clientSize = sizeof(client);
             alarm(1);
-            int aClient = accept(fd,(struct sockaddr*)&client,&clientSize);
-            if(aClient>0){
-                ch.handle(aClient);
-                close(aClient);
+            int clientAccept = accept(fileDescriptor, (struct sockaddr*)&client, &clientSize);
+            if(clientAccept > 0){
+                ch.handle(clientAccept);
+                close(clientAccept);
             }
             alarm(1);
 
         }
-        close(fd);
+        close(fileDescriptor);
     });
 }
 void Server::stop(){
@@ -76,4 +72,5 @@ void Server::stop(){
 }
 
 Server::~Server(){
+    delete t;
 }

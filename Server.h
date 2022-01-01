@@ -47,10 +47,10 @@ class AnomalyDetectionHandler:public ClientHandler{
 
 // implement on Server.cpp
 class Server {
-    int fd;
-    volatile bool stopped;
-    sockaddr_in server;
-    sockaddr_in client;
+    int fileDescriptor;
+    volatile bool stopped;//volatile because of multi-threading
+    sockaddr_in server;//server address
+    sockaddr_in client;//client address
 	thread* t; // the thread to run the start() method in
 	// you may add data members
 
