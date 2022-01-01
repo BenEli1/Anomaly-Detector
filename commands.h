@@ -183,9 +183,9 @@ public:
     }
 
     void execute() {
+        dio->write("Please upload your local anomalies file.\n");
         calculateReportsFromAnomalies();
         anomaliesFromDetects();
-        dio->write("Please upload your local anomalies file.\n");
         for (Report report: vectorFromDetect) {
             for (Report anomaly: vectorFromAnomaly) {
                 if (!(report.start > anomaly.finish || report.finish < anomaly.start)) {
