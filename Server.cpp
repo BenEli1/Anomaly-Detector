@@ -50,9 +50,12 @@ Server::Server(int port)throw (const char*) {
         exit(EXIT_FAILURE);
     }
 }
-
+//void sigHandler(int sigNum){
+//
+//}
 void Server::start(ClientHandler& ch)throw(const char*){
     t = new thread([&ch,this](){
+//        signal(SIGALRM,sigHandler);
         while(!stopped){
             socklen_t clientSize = sizeof(client);
             alarm(1);
