@@ -5,11 +5,14 @@
 #include "CLI.h"
 #include <sys/socket.h> // For socket functions
 #include <netinet/in.h> // For sockaddr_in
-#include <cstdlib> // For exit() and EXIT_FAILURE
-#include <iostream> // For cout
 #include <unistd.h> // For read
+#include <stdio.h>
+#include <pthread.h>
 #include <thread>
-
+#include<signal.h>
+#include <stdlib.h>
+#include <sstream>
+#include <iostream>
 using namespace std;
 
 // edit your ClientHandler interface here:
@@ -20,15 +23,12 @@ class ClientHandler{
 
 class socketIO:public DefaultIO{
     int clientID;
-    ifstream in;
-    ofstream out;
 public:
     socketIO(int clientID):clientID(clientID){}
     virtual string read();
     virtual void write(string text);
     virtual void write(float f);
     virtual void read(float* f);
-
 };
 // you can add helper classes here and implement on the cpp file
 
@@ -46,10 +46,10 @@ class AnomalyDetectionHandler:public ClientHandler{
 
 // implement on Server.cpp
 class Server {
-    sockaddr_in server;
-    sockaddr_in client;
     int fd;
     volatile bool stopped;
+    sockaddr_in server;
+    sockaddr_in client;
 	thread* t; // the thread to run the start() method in
 	// you may add data members
 

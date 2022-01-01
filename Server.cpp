@@ -1,10 +1,15 @@
 //Ben Eli 319086435
 //Sahar Rofe 209275114
 #include "Server.h"
-#include <thread>
-
 string socketIO::read(){
-
+    //Read char by char until /n
+    char c = 0;
+    string s = "";
+    while(c != '\n'){
+        recv(clientID,&c,sizeof(char),0);
+        s += c;
+    }
+    return s;
 }
 void socketIO::write(string text){
 
@@ -14,48 +19,56 @@ void socketIO::write(float f){
 
 }
 
-void socketIO::read(float* f){
-}
-
 Server::Server(int port)throw (const char*) {
+    stopped = false;
     // Create a socket (IPv4, TCP)
-    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd == -1) {
+    fd = socket(AF_INET, SOCK_STREAM, 0);
+    if (fd == -1) {
         std::cout << "Failed to create socket. errno: " << errno << std::endl;
         exit(EXIT_FAILURE);
     }
-    sockaddr_in sockaddr;
-    sockaddr.sin_family = AF_INET;
-    sockaddr.sin_addr.s_addr = INADDR_ANY;
-    sockaddr.sin_port = htons(port); // htons is necessary to convert a number to
+    server.sin_family = AF_INET;
+    server.sin_addr.s_addr = INADDR_ANY;
+    server.sin_port = htons(port); // htons is necessary to convert a number to
     // network byte order
-    if (bind(sockfd, (struct sockaddr*)&sockaddr, sizeof(sockaddr)) < 0) {
+    if (bind(fd, (struct sockaddr*)&server, sizeof(server)) < 0) {
         std::cout << "Failed to bind to port. errno: " << errno << std::endl;
         exit(EXIT_FAILURE);
     }
 
-    // Start listening. Hold at most 10 connections in the queue
-    if (listen(sockfd, 10) < 0) {
+    // Start listening. Hold at most 5 connections in the queue
+    if (listen(fd, 5) < 0) {
         std::cout << "Failed to listen on socket. errno: " << errno << std::endl;
         exit(EXIT_FAILURE);
     }
-
+}
+void sigHandler(int sigNum){
+    cout<<"sidH"<<endl;
 
 }
-
-
 void Server::start(ClientHandler& ch)throw(const char*){
-    t=new thread([&ch,this](){signal(SIGALRM,sigHandler);
+    t = new thread([&ch,this](){
+        signal(SIGALRM,sigHandler);
+        while(!stopped){
+            socklen_t clientSize = sizeof(client);
+            alarm(1);
+            int aClient = accept(fd,(struct sockaddr*)&client,&clientSize);
+            if(aClient>0){
+                //new thread([&aClient,this,&ch](){
+                ch.handle(aClient);
+                close(aClient);
+                //});
+            }
+            alarm(0);
 
-    }
-
-
-    }
-
-
+        }
+        close(fd);
+    });
+}
 void Server::stop(){
     t->join(); // do not delete this!
+    stopped = true;
 }
 
-Server::~Server() {
+Server::~Server(){
 }
