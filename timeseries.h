@@ -16,6 +16,13 @@ using namespace std;
 class TimeSeries{
     //map with all the data from the file, strings and float vectors
     map<string , vector<float>> data;
+public:
+    const vector<string> &getFeatureList() const;
+
+public:
+    const map<string, vector<float>> &getData() const;
+
+private:
     //list with all the feature names
     vector<string> featureList;
 public:

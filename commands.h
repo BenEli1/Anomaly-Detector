@@ -22,7 +22,6 @@ public:
         size = finish - start + 1;
     }
 };
-
 class DefaultIO{
 public:
 	virtual string read()=0;
@@ -57,8 +56,8 @@ public:
     void readAndWriteToFile(string fileName) {
         std::ofstream outfile(fileName);
         string line = "";
-        while ((line = read()) != "done") {
-            outfile << line << endl;
+        while ((line = read()) != "done\n") {
+            outfile << line;
         }
         outfile.close();
     }
@@ -69,7 +68,6 @@ public:
     // you may add additional methods here
 };
 // you may add here helper classes
-
 
 // you may edit this class
 class Command{
@@ -216,7 +214,7 @@ public:
         int start, finish;
         N = dio->csvFileTest->getSizeOfValues();
         string line;
-        while ((line = dio->read()) != "done") {
+        while ((line = dio->read()) != "done\n") {
             P++;
             start = std::stoi(line.substr(0, line.find(',')));
             finish = std::stoi(line.substr(line.find(',') + 1, line.size()));
@@ -254,6 +252,10 @@ public:
 
 
     void execute(){
+        delete dio->csvFileTest;
+        delete dio->csvFileLearn;
+        dio->csvFileTest = nullptr;
+        dio->csvFileLearn = nullptr;
         return;
     }
 };

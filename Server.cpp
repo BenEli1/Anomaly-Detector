@@ -22,6 +22,10 @@ void socketIO::write(float f){
     string s(str.str());
     write(s);
 }
+void socketIO::read(float* f){
+    recv(clientID,f,sizeof(float),0);
+}
+
 
 Server::Server(int port)throw (const char*) {
     stopped = false;
@@ -46,32 +50,28 @@ Server::Server(int port)throw (const char*) {
         exit(EXIT_FAILURE);
     }
 }
-void sigHandler(int sigNum){
-    cout<<"sidH"<<endl;
 
-}
 void Server::start(ClientHandler& ch)throw(const char*){
     t = new thread([&ch,this](){
-        signal(SIGALRM,sigHandler);
         while(!stopped){
             socklen_t clientSize = sizeof(client);
             alarm(1);
             int aClient = accept(fd,(struct sockaddr*)&client,&clientSize);
             if(aClient>0){
-                //new thread([&aClient,this,&ch](){
+                //t=new thread([&aClient,this,&ch](){
                 ch.handle(aClient);
                 close(aClient);
                 //});
             }
-            alarm(0);
+            alarm(1);
 
         }
         close(fd);
     });
 }
 void Server::stop(){
-    t->join(); // do not delete this!
     stopped = true;
+    t->join(); // do not delete this!
 }
 
 Server::~Server(){

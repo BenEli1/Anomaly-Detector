@@ -37,4 +37,12 @@ TimeSeries::~TimeSeries() {
     featureList.clear();
 }
 
+const map<string, vector<float>> &TimeSeries::getData() const {
+    return data;
+}
+
+const vector<string> &TimeSeries::getFeatureList() const {
+    return featureList;
+}
+
 
