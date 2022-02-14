@@ -1,6 +1,3 @@
-//Ben Eli 319086435
-//Sahar Rofe 209275114
-
 #ifndef CLI_H_
 #define CLI_H_
 

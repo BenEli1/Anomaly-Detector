@@ -1,5 +1,3 @@
-//Ben Eli 319086435
-//Sahar Rofe 209275114
 #include "Server.h"
 string socketIO::read(){
     //Read char by char until /n

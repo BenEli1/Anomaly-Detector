@@ -1,5 +1,3 @@
-//Ben Eli 319086435
-//Sahar Rofe 209275114
 #include "minCircle.h"
 #include <algorithm>
 #include <assert.h>

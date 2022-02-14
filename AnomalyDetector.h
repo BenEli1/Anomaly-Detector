@@ -1,5 +1,3 @@
-//Ben Eli 319086435
-//Sahar Rofe 209275114
 #ifndef ANOMALYDETECTOR_H_
 #define ANOMALYDETECTOR_H_
 

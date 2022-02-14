@@ -1,5 +1,3 @@
-//Ben Eli 319086435
-//Sahar Rofe 209275114
 #ifndef MINCIRCLE_H_
 #define MINCIRCLE_H_
 

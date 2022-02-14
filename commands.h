@@ -1,5 +1,3 @@
-//Ben Eli 319086435
-//Sahar Rofe 209275114
 #ifndef COMMANDS_H_
 #define COMMANDS_H_
 

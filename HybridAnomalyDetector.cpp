@@ -1,5 +1,3 @@
-//Ben Eli 319086435
-//Sahar Rofe 209275114
 #include "HybridAnomalyDetector.h"
 //default builder and destructor
 HybridAnomalyDetector::HybridAnomalyDetector() {

@@ -1,5 +1,3 @@
-//Ben Eli 319086435
-//Sahar Rofe 209275114
 #include "timeseries.h"
 
 //return float* to measurements of specific feature

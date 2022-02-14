@@ -1,5 +1,3 @@
-//Ben Eli 319086435
-//Sahar Rofe 209275114
 #ifndef TIMESERIES_H_
 #define TIMESERIES_H_
 #include <map>

@@ -1,5 +1,3 @@
-//Ben Eli 319086435
-//Sahar Rofe 209275114
 #include "SimpleAnomalyDetector.h"
 #include "anomaly_detection_util.h"
 

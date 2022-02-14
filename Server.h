@@ -1,5 +1,3 @@
-//Ben Eli 319086435
-//Sahar Rofe 209275114
 #ifndef SERVER_H_
 #define SERVER_H_
 #include "CLI.h"
